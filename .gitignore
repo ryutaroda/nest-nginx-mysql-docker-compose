@@ -2,3 +2,4 @@
 .env
 docker/db/data
 
+node_modules/
