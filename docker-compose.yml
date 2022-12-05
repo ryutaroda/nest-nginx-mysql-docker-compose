@@ -1,0 +1,47 @@
+version: '3'
+services:
+  nest:
+    build:
+      context: .
+      dockerfile: Dockerfile # 本番環境は Dockerfile-prod を指定する
+    container_name: nest
+    depends_on:
+      - db
+    volumes:
+      - ./src:/app/src
+      - .env:/app/.env
+
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile-nginx
+    container_name: nest-nginx
+    env_file:
+      - .env
+    depends_on:
+      - nest
+    environment:
+      - NGINX_SERVER_NAME=${NGINX_SERVER_NAME}
+      - NEST_HOST=${NEST_HOST}
+      - NEST_PORT=${NEST_PORT}
+      - NGINX_MAX_BODY=${NGINX_MAX_BODY}
+      - NGINX_PORT=${NGINX_PORT}
+    ports:
+      - ${NGINX_PORT}:${NGINX_PORT}
+
+  db:
+    image: mysql:5.7
+    platform: linux/amd64  # m1の場合追加docker compose down
+    container_name: nest-db
+    env_file:
+      - .env
+    environment:
+      MYSQL_DATABASE: ${DATABASE_NAME}
+      MYSQL_USER: ${DATABASE_USER}
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD}
+    ports:
+      - "${DATABASE_PORT}:3306"
+    volumes:
+      - ./docker/db/data:/var/lib/mysql
+      - ./docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
