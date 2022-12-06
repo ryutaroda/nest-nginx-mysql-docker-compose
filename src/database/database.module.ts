@@ -1,6 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import {Product} from "../product/entities/product.entity";
+
+export const databaseEntities = [Product];
+export const migrationFilesDir = './migrations/*.ts';
 
 @Module({
     imports: [
@@ -18,8 +22,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
                 database: configService.get('DATABASE_NAME'),
                 username: configService.get('DATABASE_USER'),
                 password: configService.get('DATABASE_PASSWORD'),
-                entities: [],
+                entities: databaseEntities,
                 synchronize: false,
+                migrations: [migrationFilesDir],
             }),
         }),
     ],
