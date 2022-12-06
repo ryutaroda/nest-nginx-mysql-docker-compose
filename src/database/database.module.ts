@@ -2,8 +2,9 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import {Product} from "../product/entities/product.entity";
+import {User} from "../users/entities/user.entity";
 
-export const databaseEntities = [Product];
+export const databaseEntities = [User];
 export const migrationFilesDir = './migrations/*.ts';
 
 @Module({
